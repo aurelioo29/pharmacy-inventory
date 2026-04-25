@@ -11,3 +11,343 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  name         String
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  roles          UserRole[]
+  purchases      Purchase[]
+  sales          Sale[]
+  stockMovements StockMovement[]
+  adjustments    StockAdjustment[]
+  auditLogs      AuditLog[]
+
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String   @unique
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  users       UserRole[]
+  permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  slug      String   @unique
+  module    String
+  action    String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  roles RolePermission[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  roleId    String   @map("role_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  id           String   @id @default(uuid()) @db.Uuid
+  roleId       String   @map("role_id") @db.Uuid
+  permissionId String   @map("permission_id") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model MedicineCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String   @unique
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  medicines Medicine[]
+
+  @@map("medicine_categories")
+}
+
+model MedicineUnit {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  symbol    String?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  medicines Medicine[]
+
+  @@map("medicine_units")
+}
+
+model Medicine {
+  id           String   @id @default(uuid()) @db.Uuid
+  categoryId   String   @map("category_id") @db.Uuid
+  unitId       String   @map("unit_id") @db.Uuid
+  code         String   @unique
+  name         String
+  description  String?
+  minimumStock Int      @default(0) @map("minimum_stock")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  category       MedicineCategory  @relation(fields: [categoryId], references: [id])
+  unit           MedicineUnit      @relation(fields: [unitId], references: [id])
+  purchaseItems  PurchaseItem[]
+  batches        MedicineBatch[]
+  saleItems      SaleItem[]
+  stockMovements StockMovement[]
+  adjustments    StockAdjustment[]
+
+  @@map("medicines")
+}
+
+model Supplier {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  phone     String?
+  email     String?
+  address   String?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  purchases Purchase[]
+
+  @@map("suppliers")
+}
+
+model Purchase {
+  id            String   @id @default(uuid()) @db.Uuid
+  supplierId    String   @map("supplier_id") @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  invoiceNumber String   @unique @map("invoice_number")
+  purchaseDate  DateTime @map("purchase_date") @db.Date
+  totalAmount   Decimal  @default(0) @map("total_amount") @db.Decimal(14, 2)
+  notes         String?
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  supplier Supplier       @relation(fields: [supplierId], references: [id])
+  user     User           @relation(fields: [userId], references: [id])
+  items    PurchaseItem[]
+
+  @@map("purchases")
+}
+
+model PurchaseItem {
+  id            String   @id @default(uuid()) @db.Uuid
+  purchaseId    String   @map("purchase_id") @db.Uuid
+  medicineId    String   @map("medicine_id") @db.Uuid
+  batchNumber   String   @map("batch_number")
+  expiredDate   DateTime @map("expired_date") @db.Date
+  quantity      Int
+  purchasePrice Decimal  @map("purchase_price") @db.Decimal(14, 2)
+  sellingPrice  Decimal  @map("selling_price") @db.Decimal(14, 2)
+  subtotal      Decimal  @db.Decimal(14, 2)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  purchase Purchase       @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  medicine Medicine       @relation(fields: [medicineId], references: [id])
+  batch    MedicineBatch?
+
+  @@map("purchase_items")
+}
+
+model MedicineBatch {
+  id              String   @id @default(uuid()) @db.Uuid
+  medicineId      String   @map("medicine_id") @db.Uuid
+  purchaseItemId  String   @unique @map("purchase_item_id") @db.Uuid
+  batchNumber     String   @map("batch_number")
+  expiredDate     DateTime @map("expired_date") @db.Date
+  initialQuantity Int      @map("initial_quantity")
+  currentQuantity Int      @map("current_quantity")
+  purchasePrice   Decimal  @map("purchase_price") @db.Decimal(14, 2)
+  sellingPrice    Decimal  @map("selling_price") @db.Decimal(14, 2)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  medicine       Medicine          @relation(fields: [medicineId], references: [id])
+  purchaseItem   PurchaseItem      @relation(fields: [purchaseItemId], references: [id])
+  saleItems      SaleItem[]
+  stockMovements StockMovement[]
+  adjustments    StockAdjustment[]
+  expiredAlerts  ExpiredAlert[]
+
+  @@index([medicineId, expiredDate])
+  @@map("medicine_batches")
+}
+
+model Sale {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  invoiceNumber String   @unique @map("invoice_number")
+  saleDate      DateTime @map("sale_date") @db.Date
+  totalAmount   Decimal  @default(0) @map("total_amount") @db.Decimal(14, 2)
+  paidAmount    Decimal  @default(0) @map("paid_amount") @db.Decimal(14, 2)
+  changeAmount  Decimal  @default(0) @map("change_amount") @db.Decimal(14, 2)
+  notes         String?
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user  User       @relation(fields: [userId], references: [id])
+  items SaleItem[]
+
+  @@map("sales")
+}
+
+model SaleItem {
+  id              String   @id @default(uuid()) @db.Uuid
+  saleId          String   @map("sale_id") @db.Uuid
+  medicineId      String   @map("medicine_id") @db.Uuid
+  medicineBatchId String   @map("medicine_batch_id") @db.Uuid
+  quantity        Int
+  sellingPrice    Decimal  @map("selling_price") @db.Decimal(14, 2)
+  subtotal        Decimal  @db.Decimal(14, 2)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  sale     Sale          @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  medicine Medicine      @relation(fields: [medicineId], references: [id])
+  batch    MedicineBatch @relation(fields: [medicineBatchId], references: [id])
+
+  @@map("sale_items")
+}
+
+model StockMovement {
+  id              String            @id @default(uuid()) @db.Uuid
+  medicineId      String            @map("medicine_id") @db.Uuid
+  medicineBatchId String            @map("medicine_batch_id") @db.Uuid
+  userId          String            @map("user_id") @db.Uuid
+  type            StockMovementType
+  quantity        Int
+  stockBefore     Int               @map("stock_before")
+  stockAfter      Int               @map("stock_after")
+  referenceType   String?           @map("reference_type")
+  referenceId     String?           @map("reference_id") @db.Uuid
+  notes           String?
+  createdAt       DateTime          @default(now()) @map("created_at")
+
+  medicine Medicine      @relation(fields: [medicineId], references: [id])
+  batch    MedicineBatch @relation(fields: [medicineBatchId], references: [id])
+  user     User          @relation(fields: [userId], references: [id])
+
+  @@index([medicineId])
+  @@index([medicineBatchId])
+  @@map("stock_movements")
+}
+
+model StockAdjustment {
+  id              String         @id @default(uuid()) @db.Uuid
+  medicineId      String         @map("medicine_id") @db.Uuid
+  medicineBatchId String         @map("medicine_batch_id") @db.Uuid
+  userId          String         @map("user_id") @db.Uuid
+  adjustmentType  AdjustmentType @map("adjustment_type")
+  quantity        Int
+  reason          String?
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  medicine Medicine      @relation(fields: [medicineId], references: [id])
+  batch    MedicineBatch @relation(fields: [medicineBatchId], references: [id])
+  user     User          @relation(fields: [userId], references: [id])
+
+  @@map("stock_adjustments")
+}
+
+model ExpiredAlert {
+  id              String           @id @default(uuid()) @db.Uuid
+  medicineBatchId String           @map("medicine_batch_id") @db.Uuid
+  alertType       ExpiredAlertType @map("alert_type")
+  alertDate       DateTime         @map("alert_date") @db.Date
+  isRead          Boolean          @default(false) @map("is_read")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+
+  batch MedicineBatch @relation(fields: [medicineBatchId], references: [id])
+
+  @@map("expired_alerts")
+}
+
+model Setting {
+  id          String   @id @default(uuid()) @db.Uuid
+  key         String   @unique
+  value       String
+  type        String   @default("string")
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
+}
+
+model AuditLog {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String?  @map("user_id") @db.Uuid
+  action       String
+  resourceType String   @map("resource_type")
+  resourceId   String?  @map("resource_id") @db.Uuid
+  oldData      Json?    @map("old_data")
+  newData      Json?    @map("new_data")
+  ipAddress    String?  @map("ip_address")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  ADJUSTMENT
+}
+
+enum AdjustmentType {
+  EXPIRED
+  DAMAGE
+  LOSS
+  CORRECTION
+  OTHER
+}
+
+enum ExpiredAlertType {
+  EXPIRING_SOON
+  EXPIRED
+}
