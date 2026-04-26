@@ -195,3 +195,20 @@ body {
 .his-form-select.ant-select-multiple .ant-select-selection-item {
   line-height: 24px !important;
 }
+
+.ant-tree {
+  background: transparent !important;
+  font-size: 13px !important;
+}
+
+.ant-tree .ant-tree-node-content-wrapper {
+  border-radius: 0 !important;
+}
+
+.ant-tree .ant-tree-node-content-wrapper:hover {
+  background: #f1f5f9 !important;
+}
+
+.ant-tree-checkbox-inner {
+  border-radius: 0 !important;
+}
