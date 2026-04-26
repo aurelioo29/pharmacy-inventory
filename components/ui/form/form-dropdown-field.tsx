@@ -1,13 +1,15 @@
 import { Form } from "antd";
 import type { MenuProps } from "antd";
+import type { NamePath } from "antd/es/form/interface";
 import FilterDropdown from "@/components/ui/filters/filter-dropdown";
 
 type FormDropdownFieldProps = {
   label: React.ReactNode;
-  name: string;
+  name: NamePath;
   value?: string | null;
   placeholder: string;
   items: MenuProps["items"];
+  rules?: object[];
 };
 
 export default function FormDropdownField({
@@ -16,9 +18,10 @@ export default function FormDropdownField({
   value,
   placeholder,
   items,
+  rules,
 }: FormDropdownFieldProps) {
   return (
-    <Form.Item label={label} name={name}>
+    <Form.Item label={label} name={name} rules={rules}>
       <FilterDropdown
         label={value || placeholder}
         muted={!value}
