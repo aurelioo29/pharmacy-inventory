@@ -69,6 +69,7 @@ const permissions = [
   ["Purchases Create", "purchases.create", "purchases", "create"],
   ["Purchases Detail", "purchases.detail", "purchases", "detail"],
   ["Purchases Delete", "purchases.delete", "purchases", "delete"],
+  ["Purchases Update", "purchases.update", "purchases", "update"],
 
   // Sales
   ["Sales View", "sales.view", "sales", "view"],

@@ -178,29 +178,30 @@ model Purchase {
 }
 
 model PurchaseItem {
-  id            String   @id @default(uuid()) @db.Uuid
-  purchaseId    String   @map("purchase_id") @db.Uuid
-  medicineId    String   @map("medicine_id") @db.Uuid
-  batchNumber   String   @map("batch_number")
-  expiredDate   DateTime @map("expired_date") @db.Date
-  quantity      Int
-  purchasePrice Decimal  @map("purchase_price") @db.Decimal(14, 2)
-  sellingPrice  Decimal  @map("selling_price") @db.Decimal(14, 2)
-  subtotal      Decimal  @db.Decimal(14, 2)
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id              String   @id @default(uuid()) @db.Uuid
+  purchaseId      String   @map("purchase_id") @db.Uuid
+  medicineId      String   @map("medicine_id") @db.Uuid
+  medicineBatchId String?  @map("medicine_batch_id") @db.Uuid
+  batchNumber     String   @map("batch_number")
+  expiredDate     DateTime @map("expired_date") @db.Date
+  quantity        Int
+  purchasePrice   Decimal  @map("purchase_price") @db.Decimal(14, 2)
+  sellingPrice    Decimal  @map("selling_price") @db.Decimal(14, 2)
+  subtotal        Decimal  @db.Decimal(14, 2)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
   purchase Purchase       @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
   medicine Medicine       @relation(fields: [medicineId], references: [id])
-  batch    MedicineBatch?
+  batch    MedicineBatch? @relation(fields: [medicineBatchId], references: [id])
 
+  @@index([medicineBatchId])
   @@map("purchase_items")
 }
 
 model MedicineBatch {
   id              String   @id @default(uuid()) @db.Uuid
   medicineId      String   @map("medicine_id") @db.Uuid
-  purchaseItemId  String   @unique @map("purchase_item_id") @db.Uuid
   batchNumber     String   @map("batch_number")
   expiredDate     DateTime @map("expired_date") @db.Date
   initialQuantity Int      @map("initial_quantity")
@@ -211,12 +212,13 @@ model MedicineBatch {
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   medicine       Medicine          @relation(fields: [medicineId], references: [id])
-  purchaseItem   PurchaseItem      @relation(fields: [purchaseItemId], references: [id])
+  purchaseItems  PurchaseItem[]
   saleItems      SaleItem[]
   stockMovements StockMovement[]
   adjustments    StockAdjustment[]
   expiredAlerts  ExpiredAlert[]
 
+  @@unique([medicineId, batchNumber])
   @@index([medicineId, expiredDate])
   @@map("medicine_batches")
 }
