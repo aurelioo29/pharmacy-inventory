@@ -7,6 +7,7 @@ import {
   CircleGauge,
   CircleAlert,
   ClipboardList,
+  FileClock,
   KeyRound,
   Package,
   PackageCheck,
@@ -107,10 +108,22 @@ export function getDashboardMenuItems(session: Session): MenuProps["items"] {
       label: <Link href="/expired-medicines">Kadaluarsa Obat</Link>,
     },
 
-    hasAnyPermission(session, ["settings.view"]) && {
-      key: "/settings",
+    hasAnyPermission(session, ["settings.view", "activity_logs.view"]) && {
+      key: "settings",
       icon: <Settings {...iconProps} />,
-      label: <Link href="/settings">Settings</Link>,
+      label: "Settings",
+      children: [
+        hasAnyPermission(session, ["settings.view"]) && {
+          key: "/settings",
+          icon: <Settings {...iconProps} />,
+          label: <Link href="/settings">General Settings</Link>,
+        },
+        hasAnyPermission(session, ["activity_logs.view"]) && {
+          key: "/settings/callback_logs",
+          icon: <FileClock {...iconProps} />,
+          label: <Link href="/settings/callback_logs">Callback Logs</Link>,
+        },
+      ].filter(Boolean) as MenuProps["items"],
     },
   ].filter(Boolean) as MenuProps["items"];
 }
