@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
     const page = Number(searchParams.get("page") || 1);
     const limit = Number(searchParams.get("limit") || 10);
     const isActive = searchParams.get("isActive");
+    const gender = searchParams.get("gender") || "";
 
     const skip = (page - 1) * limit;
 
@@ -56,6 +57,7 @@ export async function GET(request: NextRequest) {
             }
           : {},
         isActive !== null ? { isActive: isActive === "true" } : {},
+        gender ? { gender } : {},
       ],
     };
 
