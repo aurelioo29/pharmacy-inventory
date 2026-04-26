@@ -23,6 +23,7 @@ const permissions = [
   ["Users Create", "users.create", "users", "create"],
   ["Users Update", "users.update", "users", "update"],
   ["Users Delete", "users.delete", "users", "delete"],
+  ["Users Reset Password", "users.reset_password", "users", "reset_password"],
 
   // Roles
   ["Roles View", "roles.view", "roles", "view"],
@@ -159,19 +160,32 @@ async function main() {
 
   const passwordHash = await bcrypt.hash("password123", 10);
 
-  const user = await prisma.user.upsert({
-    where: { username: "admin" },
-    update: {
-      name: "Super Admin",
-      email: "admin@pharmacy.com",
-    },
-    create: {
-      name: "Super Admin",
-      username: "admin",
-      email: "admin@pharmacy.com",
-      passwordHash,
+  let user = await prisma.user.findFirst({
+    where: {
+      OR: [{ username: "admin" }, { email: "admin@pharmacy.com" }],
     },
   });
+
+  if (user) {
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        name: "Super Admin",
+        username: "admin",
+        email: "admin@pharmacy.com",
+        passwordHash,
+      },
+    });
+  } else {
+    user = await prisma.user.create({
+      data: {
+        name: "Super Admin",
+        username: "admin",
+        email: "admin@pharmacy.com",
+        passwordHash,
+      },
+    });
+  }
 
   await prisma.userRole.upsert({
     where: {
@@ -211,7 +225,7 @@ async function main() {
 
   console.log("Seeding completed.");
   console.log("Default login:");
-  console.log("Email: admin@pharmacy.com");
+  console.log("Username: admin");
   console.log("Password: password123");
 }
 
