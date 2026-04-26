@@ -1,26 +1,214 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #f1f5f9;
   --foreground: #171717;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  min-height: 100%;
+  background: var(--background);
+  color: var(--foreground);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+.font-roboto {
+  font-family: var(--font-roboto), Arial, sans-serif;
+}
+
+/* Ant Design base input */
+.ant-input,
+.ant-input-password input {
+  color: #1e293b !important;
+}
+
+.ant-input::placeholder,
+.ant-input-password input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Ant Design card */
+.ant-card {
+  box-shadow: none !important;
+}
+
+/* Ant Design table */
+.ant-table-thead > tr > th {
+  background: #fafafa !important;
+  color: #334155 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+.ant-table-tbody > tr > td {
+  font-size: 14px !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: #f8fbff !important;
+}
+
+.ant-pagination {
+  padding-right: 12px;
+}
+
+/* Filter input only */
+.his-filter-input.ant-input,
+.his-filter-input.ant-input-affix-wrapper {
+  height: 40px !important;
+  min-height: 40px !important;
+  border-radius: 0 !important;
+  font-size: 15px !important;
+}
+
+.his-filter-input.ant-input::placeholder,
+.his-filter-input.ant-input-affix-wrapper input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Dropdown replacement for select */
+.his-dropdown-select {
+  width: 100%;
+  height: 40px;
+  min-height: 40px;
+  padding: 0 11px;
+  border: 1px solid #d9d9d9;
+  border-radius: 0;
+  background: #ffffff;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.his-dropdown-select:hover,
+.his-dropdown-select:focus {
+  border-color: #1677ff;
+  border-radius: 0;
+  outline: none;
+}
+
+/* Dropdown menu */
+.his-filter-dropdown .ant-dropdown-menu {
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 4px 0 !important;
+}
+
+.his-filter-dropdown .ant-dropdown-menu-item {
+  border-radius: 0 !important;
+  font-size: 13px !important;
+  min-height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.his-filter-dropdown .ant-dropdown-menu-item:hover {
+  background: #f1f5f9 !important;
+}
+
+.his-dropdown-select {
+  height: 40px !important;
+  width: 100% !important;
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  padding: 0 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-size: 15px !important;
+}
+
+.ant-form-item {
+  margin-bottom: 14px !important;
+}
+
+/* Filter buttons only */
+.his-filter-button.ant-btn {
+  height: 40px !important;
+  border-radius: 0 !important;
+  font-size: 14px !important;
+}
+
+.his-toolbar-button {
+  height: 40px !important;
+  border-radius: 0 !important;
+  font-size: 14px !important;
+}
+
+.his-toolbar-icon-button {
+  width: 40px !important;
+  height: 40px !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.his-toolbar-icon-button:hover {
+  background: #f1f5f9 !important;
+}
+
+.his-form-input.ant-input,
+.his-form-input.ant-input-affix-wrapper,
+.his-form-input.ant-picker {
+  height: 40px !important;
+  min-height: 40px !important;
+  border-radius: 0 !important;
+  font-size: 15px !important;
+}
+
+.his-form-input.ant-input::placeholder,
+.his-form-input.ant-input-affix-wrapper input::placeholder,
+.his-form-input.ant-picker input::placeholder {
+  color: #94a3b8 !important;
+}
+
+.his-form-select.ant-select .ant-select-selector {
+  min-height: 40px !important;
+  border-radius: 0 !important;
+  font-size: 15px !important;
+}
+
+.his-form-select.ant-select .ant-select-selection-item,
+.his-form-select.ant-select .ant-select-selection-placeholder {
+  line-height: 38px !important;
+  font-size: 15px !important;
+}
+
+.his-form-select.ant-select-multiple .ant-select-selection-item {
+  line-height: 24px !important;
+}
+
+.ant-tree {
+  background: transparent !important;
+  font-size: 13px !important;
+}
+
+.ant-tree .ant-tree-node-content-wrapper {
+  border-radius: 0 !important;
+}
+
+.ant-tree .ant-tree-node-content-wrapper:hover {
+  background: #f1f5f9 !important;
+}
+
+.ant-tree-checkbox-inner {
+  border-radius: 0 !important;
 }
