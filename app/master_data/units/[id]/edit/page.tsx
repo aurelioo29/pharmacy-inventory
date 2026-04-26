@@ -32,7 +32,6 @@ export default async function EditUnitPage({ params }: EditUnitPageProps) {
         { title: "Satuan Obat", href: "/master_data/units" },
         { title: "Edit" },
       ]}
-      description="Perbarui data satuan obat."
     >
       <UnitFormPage mode="edit" unitId={id} />
     </DashboardLayout>

@@ -32,7 +32,6 @@ export default async function EditMedicinePage({
         { title: "Obat", href: "/master_data/medicines" },
         { title: "Edit" },
       ]}
-      description="Perbarui master data obat."
     >
       <MedicineFormPage mode="edit" medicineId={id} />
     </DashboardLayout>

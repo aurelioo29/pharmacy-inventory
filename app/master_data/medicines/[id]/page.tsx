@@ -32,7 +32,6 @@ export default async function MedicineDetailRoute({
         { title: "Obat", href: "/master_data/medicines" },
         { title: "Detail" },
       ]}
-      description="Lihat detail master data obat."
     >
       <MedicineDetailPage medicineId={id} />
     </DashboardLayout>

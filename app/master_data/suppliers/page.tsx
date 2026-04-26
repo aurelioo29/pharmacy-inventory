@@ -20,7 +20,6 @@ export default async function SuppliersPage() {
       session={session}
       title="Supplier"
       breadcrumbs={[{ title: "Master Data" }, { title: "Supplier" }]}
-      description="Kelola data supplier obat."
     >
       <SuppliersPageClient />
     </DashboardLayout>

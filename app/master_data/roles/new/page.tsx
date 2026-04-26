@@ -24,7 +24,6 @@ export default async function NewRolePage() {
         { title: "Roles & Permissions", href: "/master_data/roles" },
         { title: "Baru" },
       ]}
-      description="Tambah role baru dan atur permission."
     >
       <RoleFormPage mode="create" />
     </DashboardLayout>

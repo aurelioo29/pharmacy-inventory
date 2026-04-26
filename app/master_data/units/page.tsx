@@ -20,7 +20,6 @@ export default async function UnitsPage() {
       session={session}
       title="Satuan Obat"
       breadcrumbs={[{ title: "Master Data" }, { title: "Satuan Obat" }]}
-      description="Kelola satuan data obat."
     >
       <UnitsPageClient />
     </DashboardLayout>

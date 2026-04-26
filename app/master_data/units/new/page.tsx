@@ -24,7 +24,6 @@ export default async function NewUnitPage() {
         { title: "Satuan Obat", href: "/master_data/units" },
         { title: "Baru" },
       ]}
-      description="Tambah satuan obat baru."
     >
       <UnitFormPage mode="create" />
     </DashboardLayout>

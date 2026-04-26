@@ -34,7 +34,6 @@ export default async function CategoryDetailRoute({
         { title: "Kategori Obat", href: "/master_data/categories" },
         { title: "Detail" },
       ]}
-      description="Lihat detail kategori obat."
     >
       <CategoryDetailPage categoryId={id} />
     </DashboardLayout>

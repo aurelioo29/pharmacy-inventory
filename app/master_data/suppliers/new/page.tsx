@@ -24,7 +24,6 @@ export default async function NewSupplierPage() {
         { title: "Supplier", href: "/master_data/suppliers" },
         { title: "Baru" },
       ]}
-      description="Tambah supplier obat baru."
     >
       <SupplierFormPage mode="create" />
     </DashboardLayout>

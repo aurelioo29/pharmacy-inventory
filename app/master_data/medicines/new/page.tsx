@@ -22,7 +22,6 @@ export default async function NewMedicinePage() {
         { title: "Obat", href: "/master_data/medicines" },
         { title: "Baru" },
       ]}
-      description="Tambah master data obat."
     >
       <MedicineFormPage mode="create" />
     </DashboardLayout>

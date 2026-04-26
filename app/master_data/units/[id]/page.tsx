@@ -34,7 +34,6 @@ export default async function UnitDetailRoute({
         { title: "Satuan Obat", href: "/master_data/units" },
         { title: "Detail" },
       ]}
-      description="Lihat detail satuan obat."
     >
       <UnitDetailPage unitId={id} />
     </DashboardLayout>

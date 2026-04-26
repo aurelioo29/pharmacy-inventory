@@ -20,7 +20,6 @@ export default async function StockPage() {
       session={session}
       title="Stock Obat"
       breadcrumbs={[{ title: "Stock Obat" }]}
-      description="Lihat jumlah stok obat berdasarkan batch."
     >
       <StockPageClient />
     </DashboardLayout>

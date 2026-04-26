@@ -34,7 +34,6 @@ export default async function SupplierDetailRoute({
         { title: "Supplier", href: "/master_data/suppliers" },
         { title: "Detail" },
       ]}
-      description="Lihat detail supplier obat."
     >
       <SupplierDetailPage supplierId={id} />
     </DashboardLayout>

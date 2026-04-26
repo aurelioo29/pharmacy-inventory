@@ -20,7 +20,6 @@ export default async function RolesPage() {
       session={session}
       title="Roles & Permissions"
       breadcrumbs={[{ title: "Master Data" }, { title: "Roles & Permissions" }]}
-      description="Kelola role dan permission akses sistem."
     >
       <RolesPageClient />
     </DashboardLayout>

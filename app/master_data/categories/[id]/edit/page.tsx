@@ -34,7 +34,6 @@ export default async function EditCategoryPage({
         { title: "Kategori Obat", href: "/master_data/categories" },
         { title: "Edit" },
       ]}
-      description="Perbarui data kategori obat."
     >
       <CategoryFormPage mode="edit" categoryId={id} />
     </DashboardLayout>

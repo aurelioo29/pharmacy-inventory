@@ -24,7 +24,6 @@ export default async function NewCategoryPage() {
         { title: "Kategori Obat", href: "/master_data/categories" },
         { title: "Baru" },
       ]}
-      description="Tambah kategori obat baru."
     >
       <CategoryFormPage mode="create" />
     </DashboardLayout>

@@ -32,7 +32,6 @@ export default async function EditRolePage({ params }: EditRolePageProps) {
         { title: "Roles & Permissions", href: "/master_data/roles" },
         { title: "Edit" },
       ]}
-      description="Perbarui role dan permission."
     >
       <RoleFormPage mode="edit" roleId={id} />
     </DashboardLayout>

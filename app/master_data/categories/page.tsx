@@ -20,7 +20,6 @@ export default async function CategoriesPage() {
       session={session}
       title="Kategori Obat"
       breadcrumbs={[{ title: "Master Data" }, { title: "Kategori Obat" }]}
-      description="Kelola kategori data obat."
     >
       <CategoriesPageClient />
     </DashboardLayout>

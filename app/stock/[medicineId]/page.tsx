@@ -33,7 +33,6 @@ export default async function StockDetailRoute({
         { title: "Stock Obat", href: "/stock" },
         { title: "Detail" },
       ]}
-      description="Lihat batch dan pergerakan stok obat."
     >
       <StockDetailPage medicineId={medicineId} />
     </DashboardLayout>

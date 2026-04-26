@@ -34,7 +34,6 @@ export default async function EditSupplierPage({
         { title: "Supplier", href: "/master_data/suppliers" },
         { title: "Edit" },
       ]}
-      description="Perbarui data supplier obat."
     >
       <SupplierFormPage mode="edit" supplierId={id} />
     </DashboardLayout>

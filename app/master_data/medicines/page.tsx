@@ -18,7 +18,6 @@ export default async function MedicinesPage() {
       session={session}
       title="Obat"
       breadcrumbs={[{ title: "Master Data" }, { title: "Obat" }]}
-      description="Kelola master data obat."
     >
       <MedicinesPageClient />
     </DashboardLayout>

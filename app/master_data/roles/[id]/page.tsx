@@ -34,7 +34,6 @@ export default async function RoleDetailRoute({
         { title: "Roles & Permissions", href: "/master_data/roles" },
         { title: "Detail" },
       ]}
-      description="Lihat detail role dan permission."
     >
       <RoleDetailPage roleId={id} />
     </DashboardLayout>
