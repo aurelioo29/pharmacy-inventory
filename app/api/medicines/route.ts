@@ -63,13 +63,43 @@ export async function GET(request: NextRequest) {
               symbol: true,
             },
           },
+          batches: {
+            where: {
+              currentQuantity: {
+                gt: 0,
+              },
+            },
+            orderBy: {
+              expiredDate: "asc",
+            },
+          },
         },
       }),
       prisma.medicine.count({ where }),
     ]);
 
+    const medicinesWithStock = medicines.map((medicine) => {
+      const totalStock = medicine.batches.reduce(
+        (sum, batch) => sum + batch.currentQuantity,
+        0,
+      );
+
+      const stockStatus =
+        totalStock <= 0
+          ? "OUT_OF_STOCK"
+          : totalStock <= medicine.minimumStock
+            ? "LOW_STOCK"
+            : "SAFE";
+
+      return {
+        ...medicine,
+        totalStock,
+        stockStatus,
+      };
+    });
+
     return successResponse({
-      medicines,
+      medicines: medicinesWithStock,
       pagination: {
         page,
         limit,
