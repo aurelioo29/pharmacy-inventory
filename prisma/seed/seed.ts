@@ -94,6 +94,9 @@ const permissions = [
   // Settings
   ["Settings View", "settings.view", "settings", "view"],
   ["Settings Update", "settings.update", "settings", "update"],
+
+  // Activity Logs
+  ["Activity Logs View", "activity_logs.view", "activity_logs", "view"],
 ] as const;
 
 async function main() {
