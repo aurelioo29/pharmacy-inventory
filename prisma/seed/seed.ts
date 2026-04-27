@@ -81,6 +81,7 @@ const permissions = [
   ["Stock View", "stock.view", "stock", "view"],
   ["Stock Movement", "stock.movement", "stock", "movement"],
   ["Stock Adjustment", "stock.adjustment", "stock", "adjustment"],
+  ["Stock Movement View", "stock.movement.view", "stock", "view"],
 
   // Expired medicines
   [

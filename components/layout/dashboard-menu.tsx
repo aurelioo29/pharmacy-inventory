@@ -96,10 +96,22 @@ export function getDashboardMenuItems(session: Session): MenuProps["items"] {
       ].filter(Boolean) as MenuProps["items"],
     },
 
-    hasAnyPermission(session, ["stock.view", "stock.movement"]) && {
-      key: "/stock",
+    hasAnyPermission(session, ["stock.view", "stock.movement.view"]) && {
+      key: "stock",
       icon: <ChartNoAxesColumn {...iconProps} />,
-      label: <Link href="/stock">Stock Obat</Link>,
+      label: "Stock Obat",
+      children: [
+        hasAnyPermission(session, ["stock.view"]) && {
+          key: "/stock",
+          icon: <Package {...iconProps} />,
+          label: <Link href="/stock">Stock Summary</Link>,
+        },
+        hasAnyPermission(session, ["stock.movement.view"]) && {
+          key: "/stock/movements",
+          icon: <FileClock {...iconProps} />,
+          label: <Link href="/stock/movements">Kartu Stok</Link>,
+        },
+      ].filter(Boolean),
     },
 
     hasAnyPermission(session, ["expired_medicines.view"]) && {
