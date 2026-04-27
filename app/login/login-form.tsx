@@ -115,8 +115,9 @@ export default function LoginForm() {
           </Button>
         </Form>
 
-        <div className="mt-6 text-center text-xs text-slate-500">
-          Username: admin • Password: password123
+        <div className="mt-6 text-center text-xs text-black tracking-wider">
+          <span className="text-red-600">*</span> Login dengan username &
+          password yang telah di buatkan oleh admin
         </div>
       </div>
     </main>
