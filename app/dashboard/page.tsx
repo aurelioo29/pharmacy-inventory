@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import DashboardLayout from "@/components/layout/dashboard-layout";
-import { Card, Col, Row, Statistic } from "antd";
+import DashboardPageClient from "@/features/dashboard/components/dashboard-page-client";
+import { hasPermission } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
@@ -10,27 +11,18 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  if (!hasPermission(session, "dashboard.view")) {
+    redirect("/login");
+  }
+
   return (
-    <DashboardLayout session={session} title="Home">
-      <Row gutter={[16, 16]}>
-        <Col xs={24} md={8}>
-          <Card>
-            <Statistic title="Total Obat" value={0} />
-          </Card>
-        </Col>
-
-        <Col xs={24} md={8}>
-          <Card>
-            <Statistic title="Stok Rendah" value={0} />
-          </Card>
-        </Col>
-
-        <Col xs={24} md={8}>
-          <Card>
-            <Statistic title="Obat Hampir Expired" value={0} />
-          </Card>
-        </Col>
-      </Row>
+    <DashboardLayout
+      session={session}
+      title="Dashboard"
+      breadcrumbs={[{ title: "Dashboard" }]}
+      description="Ringkasan stok, penjualan, pembelian, dan aktivitas terbaru."
+    >
+      <DashboardPageClient />
     </DashboardLayout>
   );
 }

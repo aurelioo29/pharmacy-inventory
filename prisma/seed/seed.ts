@@ -100,6 +100,9 @@ const permissions = [
 
   // Activity Logs
   ["Activity Logs View", "activity_logs.view", "activity_logs", "view"],
+
+  // Dashboard
+  ["Dashboard View", "dashboard.view", "dashboard", "view"],
 ] as const;
 
 async function main() {
