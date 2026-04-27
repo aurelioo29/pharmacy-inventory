@@ -9,7 +9,7 @@ const createStockAdjustmentSchema = z.object({
   medicineId: z.string().uuid("Medicine tidak valid"),
   medicineBatchId: z.string().uuid("Batch tidak valid"),
   adjustmentType: z.enum(["EXPIRED", "DAMAGE", "LOSS", "CORRECTION", "OTHER"]),
-  quantity: z.number().int().min(1, "Quantity minimal 1"),
+  quantity: z.number().int().min(0, "Quantity minimal 0"),
   reason: z.string().optional().nullable(),
 });
 
@@ -25,12 +25,8 @@ export async function POST(request: NextRequest) {
     const validatedData = createStockAdjustmentSchema.parse(body);
 
     const batch = await prisma.medicineBatch.findUnique({
-      where: {
-        id: validatedData.medicineBatchId,
-      },
-      include: {
-        medicine: true,
-      },
+      where: { id: validatedData.medicineBatchId },
+      include: { medicine: true },
     });
 
     if (!batch) {
@@ -41,14 +37,20 @@ export async function POST(request: NextRequest) {
       return errorResponse("Batch tidak sesuai dengan obat", 400);
     }
 
-    if (validatedData.quantity > batch.currentQuantity) {
+    const stockBefore = batch.currentQuantity;
+    const isCorrection = validatedData.adjustmentType === "CORRECTION";
+
+    // 🔥 LOGIC FINAL
+    const stockAfter = isCorrection
+      ? validatedData.quantity
+      : stockBefore - validatedData.quantity;
+
+    // ❗ VALIDASI HANYA UNTUK OUT
+    if (!isCorrection && validatedData.quantity > stockBefore) {
       return errorResponse("Quantity melebihi stock batch saat ini", 400);
     }
 
     const result = await prisma.$transaction(async (tx) => {
-      const stockBefore = batch.currentQuantity;
-      const stockAfter = stockBefore - validatedData.quantity;
-
       const adjustment = await tx.stockAdjustment.create({
         data: {
           medicineId: validatedData.medicineId,
@@ -60,10 +62,8 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      const updatedBatch = await tx.medicineBatch.update({
-        where: {
-          id: validatedData.medicineBatchId,
-        },
+      await tx.medicineBatch.update({
+        where: { id: validatedData.medicineBatchId },
         data: {
           currentQuantity: stockAfter,
         },
@@ -75,7 +75,9 @@ export async function POST(request: NextRequest) {
           medicineBatchId: validatedData.medicineBatchId,
           userId: session.user.id,
           type: "ADJUSTMENT",
-          quantity: validatedData.quantity,
+          quantity: isCorrection
+            ? stockAfter - stockBefore // 🔥 penting (delta)
+            : validatedData.quantity,
           stockBefore,
           stockAfter,
           referenceType: "stock_adjustments",
@@ -84,11 +86,7 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      return {
-        adjustment,
-        updatedBatch,
-        movement,
-      };
+      return { adjustment, movement };
     });
 
     await createAuditLog({

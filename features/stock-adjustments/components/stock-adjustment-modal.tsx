@@ -125,9 +125,17 @@ export default function StockAdjustmentModal({
         >
           <InputNumber
             className="his-form-input !w-full"
-            min={1}
-            max={selectedBatch?.currentQuantity}
-            placeholder="Masukkan quantity"
+            min={0}
+            max={
+              selectedAdjustmentType === "CORRECTION"
+                ? undefined
+                : selectedBatch?.currentQuantity
+            }
+            placeholder={
+              selectedAdjustmentType === "CORRECTION"
+                ? "Masukkan stock baru"
+                : "Masukkan quantity"
+            }
           />
         </Form.Item>
 
