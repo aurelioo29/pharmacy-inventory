@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { errorResponse, successResponse } from "@/lib/api-response";
 import { createAuditLog } from "@/lib/audit-log";
+import { getSettingValue } from "@/lib/settings";
 
 const createSaleSchema = z.object({
   saleDate: z.string().min(1, "Tanggal penjualan wajib diisi"),
@@ -28,10 +29,12 @@ function buildInvoiceNumber(sequence: number) {
 }
 
 async function generateSaleInvoiceNumber(tx: typeof prisma) {
+  const prefixSetting = await getSettingValue("invoice_prefix_sale", "SAL");
+
   const now = new Date();
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
-  const prefix = `SAL-${year}${month}-`;
+  const prefix = `${prefixSetting}-${year}${month}-`;
 
   const lastSale = await tx.sale.findFirst({
     where: {
@@ -51,7 +54,7 @@ async function generateSaleInvoiceNumber(tx: typeof prisma) {
     ? Number(lastSale.invoiceNumber.split("-").at(-1) || 0)
     : 0;
 
-  return buildInvoiceNumber(lastSequence + 1);
+  return `${prefix}${String(lastSequence + 1).padStart(4, "0")}`;
 }
 
 export async function GET(request: NextRequest) {

@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { errorResponse, successResponse } from "@/lib/api-response";
+import { getNumberSetting } from "@/lib/settings";
 
 type ExpiredStatus = "EXPIRED" | "EXPIRING_SOON";
 
@@ -42,7 +43,9 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status") || "";
     const page = Number(searchParams.get("page") || 1);
     const limit = Number(searchParams.get("limit") || 10);
-    const thresholdDays = Number(searchParams.get("thresholdDays") || 30);
+    const thresholdDays =
+      Number(searchParams.get("thresholdDays")) ||
+      (await getNumberSetting("expired_warning_days", 30));
 
     const skip = (page - 1) * limit;
 
