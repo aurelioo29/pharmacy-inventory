@@ -3,7 +3,7 @@
 import { Button, Card, Skeleton, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Printer } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import InfoTable from "@/components/ui/table/info-table";
@@ -105,14 +105,25 @@ export default function SaleDetailPage({ saleId }: SaleDetailPageProps) {
         className="!rounded-none !border !border-slate-200 !bg-white"
         styles={{ body: { padding: 12 } }}
       >
-        <Button
-          type="text"
-          className="!rounded-none !border-none !px-0"
-          icon={<ArrowLeft size={15} />}
-          onClick={() => router.push("/transactions/sales")}
-        >
-          Back to List
-        </Button>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            type="text"
+            className="!rounded-none !border-none !px-0"
+            icon={<ArrowLeft size={15} />}
+            onClick={() => router.push("/transactions/sales")}
+          >
+            Back to List
+          </Button>
+
+          <Button
+            type="text"
+            className="!rounded-none !border-none"
+            icon={<Printer size={15} />}
+            onClick={() => router.push(`/transactions/sales/${saleId}/receipt`)}
+          >
+            Print Receipt
+          </Button>
+        </div>
       </Card>
 
       <Card
