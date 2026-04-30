@@ -132,17 +132,20 @@ export default function SaleFormPage() {
               name="paidAmount"
               rules={[{ required: true, message: "Jumlah bayar wajib diisi" }]}
             >
-              <InputNumber
+              <InputNumber<number>
                 className="his-form-input"
                 min={0}
                 controls={false}
                 placeholder="Jumlah bayar"
                 formatter={(value) =>
-                  value ? `Rp ${Number(value).toLocaleString("id-ID")}` : ""
+                  value !== undefined && value !== null
+                    ? `Rp ${Number(value).toLocaleString("id-ID")}`
+                    : ""
                 }
-                parser={(value) =>
-                  value?.replace(/Rp\s?|(,*)/g, "").replace(/\./g, "") || ""
-                }
+                parser={(value) => {
+                  const numericValue = value?.replace(/[^\d]/g, "") || "0";
+                  return Number(numericValue);
+                }}
               />
             </Form.Item>
 
